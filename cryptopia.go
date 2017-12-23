@@ -53,6 +53,23 @@ func (b *Cryptopia) GetTradePairs() (pairs []Pair, err error) {
 	return
 }
 
+// GetMarkets Returns all markets data
+func (b *Cryptopia) GetMarkets() (markets []Market, err error) {
+	r, err := b.client.do("GET", "GetMarkets", "", false)
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if err = handleErr(response); err != nil {
+		return
+	}
+	err = json.Unmarshal(response.Result, &markets)
+	return
+}
+
 // GetBalance Returns all balances or a specific currency balance
 func (b *Cryptopia) GetBalance(params BalanceParams) (balances []Balance, err error) {
 	payload, err := json.Marshal(params)
